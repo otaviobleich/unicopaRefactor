@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
+import { getBandeira } from '../assets/mapaBandeiras';
 
-// função local de formatação (RF-002 reaproveitado)
 const formatarData = (dataISO) => {
   const [ano, mes, dia] = dataISO.split('-');
   return `${dia}/${mes}`;
@@ -11,27 +11,58 @@ export default function DiaCard({ data, jogos }) {
   return (
     <View style={styles.card}>
 
-      {/* DATA */}
       <Text style={styles.data}>
         {formatarData(data)}
       </Text>
 
-      {/* LISTA DE JOGOS */}
-      {jogos.map((jogo, index) => (
-        <View key={index} style={styles.jogo}>
+      {jogos.map((jogo, index) => {
 
-          <View style={styles.linhaPrincipal}>
+        const ehBrasil =
+          jogo.sigla_casa === 'BRA' ||
+          jogo.sigla_fora === 'BRA' ||
+          jogo.time_casa === 'Brasil' ||
+          jogo.time_fora === 'Brasil';
 
-            <Text style={styles.time}>{jogo.time_casa}</Text>
+        const bandeiraCasa = getBandeira(jogo.sigla_casa);
+        const bandeiraFora = getBandeira(jogo.sigla_fora);
 
-            <Text style={styles.hora}>20:00</Text>
+        return (
+          <View
+            key={index}
+            style={[
+              styles.jogo,
+              ehBrasil && styles.jogoBrasil
+            ]}
+          >
 
-            <Text style={styles.time}>{jogo.time_fora}</Text>
+            <View style={styles.linhaPrincipal}>
+
+              {/* Time da casa: bandeira + sigla */}
+              <View style={styles.timeContainer}>
+                {bandeiraCasa && (
+                  <Image source={bandeiraCasa} style={styles.bandeira} />
+                )}
+                <Text style={styles.time}>{jogo.sigla_casa}</Text>
+              </View>
+
+              {/* Hora no centro */}
+              <Text style={styles.hora}>
+                {jogo.hora_brasilia || 'A definir'}
+              </Text>
+
+              {/* Time de fora: sigla + bandeira */}
+              <View style={[styles.timeContainer, styles.timeContainerDireita]}>
+                <Text style={styles.time}>{jogo.sigla_fora}</Text>
+                {bandeiraFora && (
+                  <Image source={bandeiraFora} style={styles.bandeira} />
+                )}
+              </View>
+
+            </View>
 
           </View>
-
-        </View>
-      ))}
+        );
+      })}
 
     </View>
   );
@@ -50,27 +81,60 @@ const styles = StyleSheet.create({
     color: '#f2cc2f',
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 10
+    marginBottom: 10,
   },
 
   jogo: {
-    marginBottom: 15,
+    marginBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#1e2d3d',
-    paddingBottom: 10
+    paddingBottom: 15,
+  },
+
+  jogoBrasil: {
+    borderLeftWidth: 4,
+    borderLeftColor: '#00ff88',
+    backgroundColor: '#0f2a1f',
+    shadowColor: '#00ff88',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    paddingLeft: 8,
   },
 
   linhaPrincipal: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  timeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flex: 1,
+  },
+
+  timeContainerDireita: {
+    justifyContent: 'flex-end',
+  },
+
+  bandeira: {
+    width: 28,
+    height: 20,
+    resizeMode: 'contain',
   },
 
   time: {
     color: 'white',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 
   hora: {
-    color: 'white'
-  }
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    flex: 1,
+  },
 });

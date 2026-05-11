@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ImageBackground, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import dados from './assets/dados.json';
 import DiaCard from './components/DiaCard';
 
@@ -6,7 +6,6 @@ export default function App() {
 
   const jogos = dados.jogos;
 
-  // 🔹 Agrupar por data (AGORA VAI SER USADO)
   const agrupapordata = (jogos) => {
     return jogos.reduce((acc, jogo) => {
       const data = jogo.data_brasilia;
@@ -23,29 +22,36 @@ export default function App() {
   const jogosAgrupados = agrupapordata(jogos);
 
   return (
-    <ImageBackground style={styles.container}
-      source={require('./assets/bg-overlay.png')}>
+    <View style={styles.container}>
 
-      <Image style={styles.logo}
-        source={require('./assets/unicopa.png')}
-      />
+      <ScrollView contentContainerStyle={styles.scroll}>
 
-      <Text style={styles.title}>CALENDÁRIO</Text>
+        <Image
+          style={styles.logo}
+          source={require('./assets/unicopa.png')}
+        />
 
-      <ScrollView>
+        <Text style={styles.title}>CALENDÁRIO</Text>
+
         {Object.entries(jogosAgrupados).map(([data, jogosDoDia]) => (
           <DiaCard key={data} data={data} jogos={jogosDoDia} />
         ))}
+
       </ScrollView>
 
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#000',
+  },
+
+  scroll: {
     alignItems: 'center',
+    paddingBottom: 40,
   },
 
   logo: {
@@ -60,5 +66,5 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: 'white',
-  }
+  },
 });
