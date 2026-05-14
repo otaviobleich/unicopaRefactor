@@ -37,7 +37,7 @@ export default function DiaCard({ data, jogos }) {
 
             <View style={styles.linhaPrincipal}>
 
-              {/* Time da casa: bandeira + sigla */}
+              
               <View style={styles.timeContainer}>
                 {bandeiraCasa && (
                   <Image source={bandeiraCasa} style={styles.bandeira} />
@@ -45,12 +45,12 @@ export default function DiaCard({ data, jogos }) {
                 <Text style={styles.time}>{jogo.sigla_casa}</Text>
               </View>
 
-              {/* Hora no centro */}
+              
               <Text style={styles.hora}>
                 {jogo.hora_brasilia || 'A definir'}
               </Text>
 
-              {/* Time de fora: sigla + bandeira */}
+              
               <View style={[styles.timeContainer, styles.timeContainerDireita]}>
                 <Text style={styles.time}>{jogo.sigla_fora}</Text>
                 {bandeiraFora && (
